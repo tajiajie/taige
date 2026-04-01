@@ -6,6 +6,7 @@ import { ICONS, COLORS, MONTHS } from '../constants';
 import { Download, MapPin } from 'lucide-react';
 import * as echarts from 'echarts';
 import 'echarts-gl';
+import chinaMapData from '../data/china_map.json';
 
 interface OverviewProps {
   selectedMonth: string;
@@ -45,16 +46,8 @@ const ChinaMap3D: React.FC<{ month: string, filterSeed: string }> = ({ month, fi
     });
     
     try {
-      const url = `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}_full.json`;
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      
-      const contentType = response.headers.get("content-type");
-      if (!contentType || !contentType.includes("application/json")) {
-        throw new TypeError("Oops, we haven't got JSON!");
-      }
-
-      const geoJson = await response.json();
+      // 使用本地地图数据
+      const geoJson = chinaMapData;
       echarts.registerMap('currentMap', geoJson);
 
       const baseSeed = getHashCode(filterSeed);
@@ -120,25 +113,8 @@ const ChinaMap3D: React.FC<{ month: string, filterSeed: string }> = ({ month, fi
       chart.setOption(option, true);
       setCurrentAdcode(adcode);
       setCurrentName(name);
-    } catch (e) {
-      try {
-        const url = `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}.json`;
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-          throw new TypeError("Oops, we haven't got JSON!");
-        }
-
-        const geoJson = await response.json();
-        echarts.registerMap('currentMap', geoJson);
-        chart.setOption({ series: [{ map: 'currentMap' }] });
-        setCurrentAdcode(adcode);
-        setCurrentName(name);
-      } catch (err) {
-        console.warn('Map load failed for adcode:', adcode, err);
-      }
+    } catch (err) {
+      console.warn('Map load failed:', err);
     } finally {
       chart.hideLoading();
     }

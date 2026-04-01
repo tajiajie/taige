@@ -1,0 +1,65 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "adcode": "110000",
+        "name": "北京市",
+        "center": [116.405285, 39.904989]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[116.4, 39.9], [116.5, 39.9], [116.5, 40.0], [116.4, 40.0], [116.4, 39.9]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "adcode": "310000",
+        "name": "上海市",
+        "center": [121.472644, 31.231706]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[121.4, 31.2], [121.5, 31.2], [121.5, 31.3], [121.4, 31.3], [121.4, 31.2]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "adcode": "440000",
+        "name": "广东省",
+        "center": [113.264385, 23.129111]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[113.0, 23.0], [113.5, 23.0], [113.5, 24.0], [113.0, 24.0], [113.0, 23.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "adcode": "320000",
+        "name": "江苏省",
+        "center": [118.767413, 32.041544]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[118.5, 32.0], [119.0, 32.0], [119.0, 34.0], [118.5, 34.0], [118.5, 32.0]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "adcode": "330000",
+        "name": "浙江省",
+        "center": [120.15507, 30.274085]
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[119.5, 28.5], [121.0, 28.5], [121.0, 31.0], [119.5, 31.0], [119.5, 28.5]]]
+      }
+    }
+  ]
+}
