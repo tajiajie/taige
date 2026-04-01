@@ -6,6 +6,7 @@ import { ICONS, COLORS, MONTHS } from '../constants';
 import { Download, MapPin } from 'lucide-react';
 import * as echarts from 'echarts';
 import 'echarts-gl';
+import chinaMapDataFull from '../data/china_map_full.json';
 import chinaMapData from '../data/china_map.json';
 
 interface OverviewProps {
@@ -47,8 +48,8 @@ const ChinaMap3D: React.FC<{ month: string, filterSeed: string }> = ({ month, fi
     
     try {
       // 使用本地地图数据
-      const geoJson = chinaMapData;
-      echarts.registerMap('currentMap', geoJson);
+      const geoJson = chinaMapDataFull;
+      echarts.registerMap('currentMap', geoJson as any);
 
       const baseSeed = getHashCode(filterSeed);
       const mockData = geoJson.features.map((f: any, index: number) => {
@@ -114,7 +115,15 @@ const ChinaMap3D: React.FC<{ month: string, filterSeed: string }> = ({ month, fi
       setCurrentAdcode(adcode);
       setCurrentName(name);
     } catch (err) {
-      console.warn('Map load failed:', err);
+      try {
+        const geoJson = chinaMapData;
+        echarts.registerMap('currentMap', geoJson as any);
+        chart.setOption({ series: [{ map: 'currentMap' }] });
+        setCurrentAdcode(adcode);
+        setCurrentName(name);
+      } catch (err) {
+        console.warn('Map load failed for adcode:', adcode, err);
+      }
     } finally {
       chart.hideLoading();
     }
