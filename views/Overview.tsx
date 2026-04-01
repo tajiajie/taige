@@ -4,6 +4,8 @@ import { ResponsiveContainer, ComposedChart, Bar, Line, XAxis, YAxis, CartesianG
 import { DashboardModule, CockpitKPICard } from '../components/Widgets';
 import { ICONS, COLORS, MONTHS } from '../constants';
 import { Download, MapPin } from 'lucide-react';
+import * as echarts from 'echarts';
+import 'echarts-gl';
 
 interface OverviewProps {
   selectedMonth: string;
@@ -34,8 +36,6 @@ const ChinaMap3D: React.FC<{ month: string, filterSeed: string }> = ({ month, fi
   const loadMap = async (adcode: string, name: string) => {
     if (!chartRef.current) return;
     const chart = chartRef.current;
-    const echarts = (window as any).echarts;
-    if (!echarts) return;
 
     chart.showLoading({ 
       maskColor: 'rgba(0,0,0,0.5)', 
@@ -146,8 +146,6 @@ const ChinaMap3D: React.FC<{ month: string, filterSeed: string }> = ({ month, fi
 
   useEffect(() => {
     if (!containerRef.current) return;
-    const echarts = (window as any).echarts;
-    if (!echarts) return;
     const chart = echarts.init(containerRef.current);
     chartRef.current = chart;
     loadMap('100000', '中国全图');
