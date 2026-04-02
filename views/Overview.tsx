@@ -45,7 +45,7 @@ const ChinaMap3D: React.FC<{ month: string, filterSeed: string }> = ({ month, fi
     });
     
     try {
-      const url = `/api/geo/areas_v3/bound/${adcode}_full.json`;
+      const url = `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}_full.json`;
       const response = await fetch(url);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       
