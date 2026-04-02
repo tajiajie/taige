@@ -4,10 +4,6 @@ import { ResponsiveContainer, ComposedChart, Bar, Line, XAxis, YAxis, CartesianG
 import { DashboardModule, CockpitKPICard } from '../components/Widgets';
 import { ICONS, COLORS, MONTHS } from '../constants';
 import { Download, MapPin } from 'lucide-react';
-import * as echarts from 'echarts';
-import 'echarts-gl';
-import chinaMapDataFull from '../data/china_map_full.json';
-import chinaMapData from '../data/china_map.json';
 
 interface OverviewProps {
   selectedMonth: string;
@@ -38,6 +34,8 @@ const ChinaMap3D: React.FC<{ month: string, filterSeed: string }> = ({ month, fi
   const loadMap = async (adcode: string, name: string) => {
     if (!chartRef.current) return;
     const chart = chartRef.current;
+    const echarts = (window as any).echarts;
+    if (!echarts) return;
 
     chart.showLoading({ 
       maskColor: 'rgba(0,0,0,0.5)', 
@@ -47,9 +45,17 @@ const ChinaMap3D: React.FC<{ month: string, filterSeed: string }> = ({ month, fi
     });
     
     try {
-      // 使用本地地图数据
-      const geoJson = chinaMapDataFull;
-      echarts.registerMap('currentMap', geoJson as any);
+      const url = `/api/geo/areas_v3/bound/${adcode}_full.json`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new TypeError("Oops, we haven't got JSON!");
+      }
+      const geoJson = await response.json();
+      console.log('GeoJSON data:', response, geoJson);
+      echarts.registerMap('currentMap', geoJson);
 
       const baseSeed = getHashCode(filterSeed);
       const mockData = geoJson.features.map((f: any, index: number) => {
@@ -114,10 +120,21 @@ const ChinaMap3D: React.FC<{ month: string, filterSeed: string }> = ({ month, fi
       chart.setOption(option, true);
       setCurrentAdcode(adcode);
       setCurrentName(name);
-    } catch (err) {
+    } catch (e) {
       try {
-        const geoJson = chinaMapData;
-        echarts.registerMap('currentMap', geoJson as any);
+        const url = `https://geo.datav.aliyun.com/areas_v3/bound/${adcode}.json`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new TypeError("Oops, we haven't got JSON!");
+        }
+
+        const geoJson = await response.json();
+        console.log('GeoJSON datatry:', response, geoJson);
+        echarts.registerMap('currentMap', geoJson);
+
         chart.setOption({ series: [{ map: 'currentMap' }] });
         setCurrentAdcode(adcode);
         setCurrentName(name);
@@ -131,6 +148,8 @@ const ChinaMap3D: React.FC<{ month: string, filterSeed: string }> = ({ month, fi
 
   useEffect(() => {
     if (!containerRef.current) return;
+    const echarts = (window as any).echarts;
+    if (!echarts) return;
     const chart = echarts.init(containerRef.current);
     chartRef.current = chart;
     loadMap('100000', '中国全图');
